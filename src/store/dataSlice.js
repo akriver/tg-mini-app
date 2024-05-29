@@ -17,16 +17,13 @@ const initialState = {
     format: "",
     list: [],
   },
-  customButtonAd: {
-    format: "",
-    list: [],
-  },
   keyboardButton: {
     isEmpty: true,
     format: "",
     list: [],
   },
   adDetail: {
+    isEmpty: true,
     mode: "",
     imgUrl: null,
     content: "",

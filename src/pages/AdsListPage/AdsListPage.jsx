@@ -13,9 +13,12 @@ import {
 } from "react-icons/ri";
 import { setAdStatus, getAdsListApi, deleteAdApi } from "@/api/api.js";
 import { IoIosAddCircleOutline } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 function AdsItem(props) {
-  const { item, mode } = props;
+  const { item, mode, index } = props;
+  const navigate = useNavigate();
+
   return (
     <div
       style={{
@@ -70,11 +73,14 @@ function AdsItem(props) {
           paddingTop: "10px",
         }}
       >
-        <Link>
-          <RiEditLine
-            style={{ fontSize: "25px", marginRight: "20px", color: "#555" }}
-          />
-        </Link>
+        <RiEditLine
+          style={{ fontSize: "25px", marginRight: "20px", color: "#555" }}
+          onClick={() => {
+            navigate(
+              `/advert-detail?mode=${mode}&index=${index}&id=${item.id}`
+            );
+          }}
+        />
         <RiDeleteBinLine
           style={{ fontSize: "25px", marginRight: "20px", color: "#555" }}
           onClick={async () => {
@@ -164,6 +170,7 @@ export function AdsListPage() {
               .map((item, index) => (
                 <AdsItem
                   key={index}
+                  index={index}
                   item={item}
                   mode={mode}
                   update={update}

@@ -64,6 +64,10 @@ export function createAdApi(param, callback) {
   post("/twa-bot/ads/create", param, callback);
 }
 
+export function updateAdApi(param, callback) {
+  post("/twa-bot/ads/update", param, callback);
+}
+
 export function createWelcomeApi(param, callback) {
   post("/twa-bot/welcome/create", param, callback);
 }

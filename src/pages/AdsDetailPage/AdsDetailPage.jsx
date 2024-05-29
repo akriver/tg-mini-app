@@ -1,6 +1,5 @@
 import "@telegram-apps/telegram-ui/dist/styles.css";
 import { Button } from "@telegram-apps/telegram-ui";
-import { Link } from "@/components/Link/Link.jsx";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { TextArea, Selector, Picker, Toast } from "antd-mobile";
@@ -8,7 +7,7 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setAdDetail, setCustomButton } from "../../store/dataSlice";
-import { createAdApi } from "@/api/api";
+import { getAdsListApi, createAdApi, updateAdApi } from "@/api/api";
 import { ImageUploadSection } from "@/components/ImageUpload/ImageUploadSection";
 import { on } from "@tma.js/sdk";
 
@@ -92,12 +91,19 @@ export function AdsDetailPage() {
 
   const counter = useSelector((state) => state.counter);
   let cols = counter.customButton.format.split("*")[1];
-  let _mode = location.search.split("=")[1];
+  var params = new URLSearchParams(location.search);
+
+  const _mode = params.get("mode");
+  const index = parseInt(params.get("index"));
+  const id = parseInt(params.get("id"));
+
+  if (_mode === "multi") initTimeData();
 
   //清除暂存数据
   const clear = () => {
     dispatch(
       setAdDetail({
+        isEmpty: true,
         mode: "",
         imgUrl: null,
         content: "",
@@ -118,9 +124,42 @@ export function AdsDetailPage() {
       clear();
       console.log("back_button_pressed");
     });
-    if (_mode === "multi") initTimeData();
+    if (id && counter.adDetail.isEmpty) {
+      getAdsListApi({ bot_id: localStorage.getItem("botId") }, (res) => {
+        if (res.data.length > 0) {
+          const _data = res.data.filter((item) =>
+            _mode === "single" ? item.exec_type === 2 : item.exec_type === 1
+          );
+          const data = _data[index];
+          const duration = data.exec_duration;
+          const time = data.exec_time;
+          const content = JSON.parse(data.content);
+          const text = content.text;
+          const url = content.medias_path[0];
+          const keyboardData = content.inline_keyboard;
+          const row = keyboardData.length;
+          const col = keyboardData[0].length;
+          const format = `${row}*${col}`;
+          const list = keyboardData.flat();
+          dispatch(
+            setCustomButton({
+              format,
+              list,
+            })
+          );
+          setAdDetailData({
+            ...adDetailData,
+            content: text,
+            imgUrl: url,
+            duration,
+            time,
+          });
+        }
+      });
+    } else {
+      setAdDetailData(counter.adDetail);
+    }
     setMode(_mode);
-    setAdDetailData(counter.adDetail);
     return () => removeListener();
   }, []);
 
@@ -161,7 +200,7 @@ export function AdsDetailPage() {
           mode="outlined"
           size="s"
           onClick={() => {
-            dispatch(setAdDetail(adDetailData));
+            dispatch(setAdDetail({ ...adDetailData, isEmpty: false }));
             navigate("/custom-button");
           }}
         >
@@ -260,29 +299,52 @@ export function AdsDetailPage() {
           let list = counter.customButton.list;
           let colNum = format.split("*")[1];
           let keyBoardButton = to2DArray(list, colNum);
-          console.log("keyboard", keyBoardButton);
+          //console.log("keyboard", keyBoardButton);
 
-          createAdApi(
-            {
-              bot_id: localStorage.getItem("botId"),
-              bot_token: localStorage.getItem("botToken"),
-              content: JSON.stringify({
-                text: adDetailData.content,
-                //text_links: [],
-                inline_keyboard: keyBoardButton,
-                medias_path: adDetailData.imgUrl ? [adDetailData.imgUrl] : [],
-              }),
-              exec_time: adDetailData.time,
-              exec_duration: adDetailData.duration,
-              exec_type: mode === "single" ? 2 : 1,
-            },
-            () => {
-              //清除暂存数据
-              clear();
-              Toast.show({ content: "保存成功", position: "center" });
-              navigate(-1);
-            }
-          );
+          if (id) {
+            updateAdApi(
+              {
+                id,
+                content: JSON.stringify({
+                  text: adDetailData.content,
+                  //text_links: [],
+                  inline_keyboard: keyBoardButton,
+                  medias_path: adDetailData.imgUrl ? [adDetailData.imgUrl] : [],
+                }),
+                exec_time: adDetailData.time,
+                exec_duration: adDetailData.duration,
+                exec_type: mode === "single" ? 2 : 1,
+              },
+              () => {
+                //清除暂存数据
+                clear();
+                Toast.show({ content: "保存成功", position: "center" });
+                navigate(-1);
+              }
+            );
+          } else {
+            createAdApi(
+              {
+                bot_id: localStorage.getItem("botId"),
+                bot_token: localStorage.getItem("botToken"),
+                content: JSON.stringify({
+                  text: adDetailData.content,
+                  //text_links: [],
+                  inline_keyboard: keyBoardButton,
+                  medias_path: adDetailData.imgUrl ? [adDetailData.imgUrl] : [],
+                }),
+                exec_time: adDetailData.time,
+                exec_duration: adDetailData.duration,
+                exec_type: mode === "single" ? 2 : 1,
+              },
+              () => {
+                //清除暂存数据
+                clear();
+                Toast.show({ content: "保存成功", position: "center" });
+                navigate(-1);
+              }
+            );
+          }
         }}
       >
         保存
