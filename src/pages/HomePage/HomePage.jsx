@@ -1,17 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "@/components/Link/Link.jsx";
-import { routes } from "@/navigation/routes.jsx";
 import { useInitData } from "@tma.js/sdk-react";
 import { Cell, List, Avatar } from "@telegram-apps/telegram-ui";
 import "./HomePage.css";
 import "@telegram-apps/telegram-ui/dist/styles.css";
 import TopImage from "./topBg.jpg";
 import DefaultAvatarImage from "./defaultAvatar.jpg";
-import {
-  RightOutlined,
-  SettingOutlined,
-  UnorderedListOutlined,
-} from "@ant-design/icons";
+import { RightOutlined } from "@ant-design/icons";
 import { RiRobot2Fill } from "react-icons/ri";
 import { PiSquaresFourDuotone } from "react-icons/pi";
 import { getBots, getWelcomeInfo, getKeyboardApi, getUserApi } from "@/api/api";
@@ -163,7 +158,7 @@ export function HomePage() {
               <RightOutlined style={{ color: "#ccc" }} />
             </>
           }
-          style={{ borderRadius: "10px", background: "#fff" }}
+          style={{ borderRadius: "10px", background: "#fff", color: "#000" }}
           onClick={() => nav("/keyboard-button")}
         >
           配置键盘按钮
@@ -178,6 +173,7 @@ export function HomePage() {
             marginTop: "10px",
             borderRadius: "10px",
             background: "#fff",
+            color: "#000",
           }}
         >
           <Cell>怎样创建机器人</Cell>
@@ -197,28 +193,6 @@ export function HomePage() {
               互站技术支持
             </div>
           </Link>
-          {/* <div style={{ position: "relative" }}>
-            <SettingOutlined
-              style={{
-                fontSize: "30px",
-                color: "#000",
-                position: "absolute",
-                left: "25px",
-                top: "0",
-              }}
-            />
-            <Link to="/free-service">
-              <UnorderedListOutlined
-                style={{
-                  fontSize: "30px",
-                  color: "#000",
-                  position: "absolute",
-                  right: "25px",
-                  top: "0",
-                }}
-              />
-            </Link>
-          </div> */}
         </div>
       </List>
     </div>

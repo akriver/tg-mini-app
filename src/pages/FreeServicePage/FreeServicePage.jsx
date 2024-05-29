@@ -39,6 +39,7 @@ export function FreeServicePage() {
             marginBottom: "10px",
             borderRadius: "10px",
             background: "#fff",
+            color: "#000",
           }}
         >
           <Cell onClick={() => nav("/welcome-set?from=menu")}>欢迎语</Cell>
