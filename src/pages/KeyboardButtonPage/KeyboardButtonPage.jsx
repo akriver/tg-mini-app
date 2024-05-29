@@ -37,14 +37,6 @@ export const options = [
     value: "2*3",
   },
   {
-    label: "2*4",
-    value: "2*4",
-  },
-  {
-    label: "2*5",
-    value: "2*5",
-  },
-  {
     label: "3*1",
     value: "3*1",
   },
@@ -55,6 +47,14 @@ export const options = [
   {
     label: "3*3",
     value: "3*3",
+  },
+  {
+    label: "4*2",
+    value: "4*2",
+  },
+  {
+    label: "5*2",
+    value: "5*2",
   },
 ];
 

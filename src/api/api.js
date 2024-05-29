@@ -84,12 +84,16 @@ export function updateKeyboardButton(param, callback) {
   post("/twa-bot/keyboards/update", param, callback);
 }
 
-export function getBots() {
+export function getBots(callback) {
   fetch(`${host}/twa-bot/bots/get-bots`, {
     headers: {
       user_id: initData.user.id,
     },
-  });
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      callback && callback(json);
+    });
 }
 
 export function getUserApi(callback) {

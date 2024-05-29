@@ -69,7 +69,20 @@ export function HomePage() {
       }
     });
 
-    getBots();
+    getBots((res) => {
+      if (res.data.length > 0) {
+        let data = res.data[0];
+        if (
+          data.bot_token &&
+          data.bot_token.length > 0 &&
+          !localStorage.getItem("botToken")
+        ) {
+          const botId = data.bot_token.split(":")[0];
+          localStorage.setItem("botToken", data.bot_token);
+          localStorage.setItem("botId", botId);
+        }
+      }
+    });
     getWelcomeInfo();
     getKeyboardApi();
 
@@ -164,7 +177,7 @@ export function HomePage() {
           配置键盘按钮
         </Cell>
         <div
-          style={{ fontSize: "17px", textAlign: "center", marginTop: "20px" }}
+          style={{ fontSize: "17px", textAlign: "center", marginTop: "10px" }}
         >
           机器人教程
         </div>
@@ -187,7 +200,7 @@ export function HomePage() {
                 fontSize: "15px",
                 color: "rgb(80,158,231)",
                 textAlign: "center",
-                marginTop: "40px",
+                marginTop: "10px",
               }}
             >
               互站技术支持
