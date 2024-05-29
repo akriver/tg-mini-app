@@ -10,7 +10,7 @@ Mini Apps platform using the following technologies:
 - [Vite](https://vitejs.dev/)
 
 > This boilerplate was created using [pnpm](https://pnpm.io/). Therefore, it is required to use
-> it for this project as well.
+> it for this project as well
 
 ## First Start
 
