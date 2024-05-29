@@ -35,7 +35,9 @@ function AdsItem(props) {
           padding: "8px",
         }}
       >
-        <div>{JSON.parse(item.content).text}</div>
+        <div className="multi-line-ellipsis">
+          {JSON.parse(item.content).text}
+        </div>
         <div style={{ color: "#bbb" }}>
           {item.exec_type === 1
             ? `执行时间: ${item.exec_time}`

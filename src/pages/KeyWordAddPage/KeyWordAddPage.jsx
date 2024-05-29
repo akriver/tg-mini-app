@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "@/components/Link/Link.jsx";
 import "@telegram-apps/telegram-ui/dist/styles.css";
 import { Button } from "@telegram-apps/telegram-ui";
-import { Switch, Selector, Input, Toast } from "antd-mobile";
+import { Switch, Selector, Input, Toast, TextArea } from "antd-mobile";
 import { useNavigate } from "react-router-dom";
 import { addKeyWordApi } from "@/api/api";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -151,12 +151,29 @@ export function KeyWordAddPage() {
           }
         />
       )}
-      <BaseInput
+      {/* <BaseInput
         title="添加回复内容"
         value={reply}
         setValue={setReply}
         placeholder="回复内容"
-      />
+      /> */}
+      <div
+        style={{
+          margin: "10px 20px 10px 20px",
+          borderRadius: "10px",
+          background: "#fff",
+          padding: "10px",
+        }}
+      >
+        <TextArea
+          placeholder="回复内容"
+          autoSize={{ minRows: 3, maxRows: 10 }}
+          value={reply}
+          onChange={(val) => {
+            setReply(val);
+          }}
+        />
+      </div>
       <div style={{ padding: "0 10px 60px 10px" }}>
         <div style={{ padding: "10px" }}>添加底部按钮</div>
         <ButtonGroup group={group} setGroup={setGroup} />

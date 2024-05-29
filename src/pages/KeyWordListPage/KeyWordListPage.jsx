@@ -81,16 +81,12 @@ function KeyWordsItem(props) {
           textAlign: "center",
           fontSize: "16px",
           display: "flex",
+          padding: "8px",
         }}
       >
         <div
-          style={{
-            display: "inline-block",
-            padding: "5px",
-            width: "100px",
-            overflow: "hidden",
-            flex: 3,
-          }}
+          className="multi-line-ellipsis-3"
+          style={{ padding: "5px", height: "70px", flex: 3 }}
         >
           {JSON.parse(item.content)?.text}
         </div>
@@ -138,7 +134,9 @@ export function KeyWordListPage() {
       {
         bot_id: localStorage.getItem("botId"),
       },
-      (res) => setKeyWords(res.data)
+      (res) => {
+        setKeyWords(res.data);
+      }
     );
   }, [update]);
 
