@@ -153,9 +153,9 @@ export function KeyboardButtonPage() {
               style={{
                 width:
                   cols === 1
-                    ? "90%"
+                    ? "95%"
                     : cols === 2
-                    ? "45%"
+                    ? "46%"
                     : cols === 3
                     ? "30%"
                     : cols === 4

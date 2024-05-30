@@ -7,7 +7,6 @@ const host =
     : "https://twa-bot.dcdc8.cn:8888";
 
 const { initData } = retrieveLaunchParams();
-console.log("Mode", import.meta.env.MODE);
 console.log("init", initData);
 
 function post(url, param, callback) {
@@ -57,7 +56,15 @@ export function getKeyWordsListApi(param, callback) {
 }
 
 export function getAdsListApi(param, callback) {
-  post("/twa-bot/ads/list", param, callback);
+  //post("/twa-bot/ads/list", param, callback);
+  return fetch(`${host}/twa-bot/ads/list`, {
+    method: "post",
+    headers: {
+      user_id: initData.user.id,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(param),
+  });
 }
 
 export function createAdApi(param, callback) {

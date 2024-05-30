@@ -136,12 +136,24 @@ export function AdsListPage() {
 
   useEffect(() => {
     let _mode = location.search.split("=")[1];
-    getAdsListApi({ bot_id: localStorage.getItem("botId") }, (res) => {
-      setList(res.data);
+    setLoading(true);
+
+    // getAdsListApi({ bot_id: localStorage.getItem("botId") }, (res) => {
+    //   setList(res.data);
+    //   setMode(_mode);
+    //   setLoading(false);
+    // });
+
+    async function getList() {
+      const response = await getAdsListApi({
+        bot_id: localStorage.getItem("botId"),
+      });
+      const json = await response.json();
+      setList(json.data);
       setMode(_mode);
       setLoading(false);
-    });
-    setLoading(true);
+    }
+    getList();
   }, [update]);
 
   return (
@@ -178,12 +190,15 @@ export function AdsListPage() {
                 />
               ))}
             {list.length === 0 && (
-              <Empty description="暂无数据" style={{ background: "#f1f1f1" }} />
+              <Empty
+                description="暂无数据"
+                style={{ background: "#f1f1f1", marginTop: "40%" }}
+              />
             )}
           </div>
           <div style={{ textAlign: "center" }}>
             <Link to={"/advert-detail?mode=" + mode}>
-              <IoIosAddCircleOutline style={{ fontSize: "25px" }} />
+              <IoIosAddCircleOutline style={{ fontSize: "40px" }} />
             </Link>
           </div>
         </List>

@@ -62,13 +62,24 @@ export function WelcomeSetPage() {
           const content = JSON.parse(data.content);
           const text = content.text;
           const url = content.medias_path[0];
+          const keyboardData = content.inline_keyboard;
+          const row = keyboardData.length;
+          const col = keyboardData[0].length;
+          const format = `${row}*${col}`;
+          const list = keyboardData.flat();
+          dispatch(
+            setCustomButton({
+              format,
+              list,
+            })
+          );
           setWelcomeData({ ...welcomeData, content: text, imgUrl: url });
         }
       });
     } else {
       setWelcomeData(counter.welcomeDetail);
     }
-    return () => removeListener()
+    return () => removeListener();
   }, []);
 
   return (
