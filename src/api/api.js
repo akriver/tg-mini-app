@@ -47,6 +47,10 @@ export function addKeyWordApi(param, callback) {
   post("/twa-bot/keywords/create", param, callback);
 }
 
+export function updateKeyWordApi(param, callback) {
+  post("/twa-bot/keywords/update", param, callback);
+}
+
 export function deleteKeyWordApi(param) {
   post("/twa-bot/keywords/delete", param);
 }

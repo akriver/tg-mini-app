@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { Link } from "@/components/Link/Link.jsx";
+import { useState, useEffect } from "react";
 import "@telegram-apps/telegram-ui/dist/styles.css";
 import { Button } from "@telegram-apps/telegram-ui";
 import { Switch, Selector, Input, Toast, TextArea } from "antd-mobile";
 import { useNavigate } from "react-router-dom";
-import { addKeyWordApi } from "@/api/api";
+import { getKeyWordsListApi, addKeyWordApi, updateKeyWordApi } from "@/api/api";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { ImageUploadSection } from "@/components/ImageUpload/ImageUploadSection";
+import { useLocation } from "react-router-dom";
 
 export function BaseInput(props) {
   const {
@@ -103,11 +103,45 @@ function ButtonGroup(props) {
 export function KeyWordAddPage() {
   const [keyWord, setKeyWord] = useState("");
   const [isSwitch, setIsSwitch] = useState(false);
-  const [switchType, setSwitchType] = useState(0);
+  const [switchType, setSwitchType] = useState("0");
   const [reply, setReply] = useState("");
   const [group, setGroup] = useState([]);
   const [imgUrl, setImgUrl] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  var params = new URLSearchParams(location.search);
+  const index = parseInt(params.get("index"));
+  const id = params.get("id");
+
+  useEffect(() => {
+    if (id) {
+      getKeyWordsListApi(
+        {
+          bot_id: localStorage.getItem("botId"),
+        },
+        (res) => {
+          if (res.data.length > 0) {
+            const data = res.data[index];
+            const keyWord = data.key_words;
+            const _switch = data.is_switch;
+            const type = "" + data.switch_type;
+            const content = JSON.parse(data.content);
+            const text = content.text;
+            const url = content.medias_path[0];
+            const keyboardData = content.inline_keyboard;
+            const list = keyboardData.flat();
+            setImgUrl(url);
+            setKeyWord(keyWord);
+            setReply(text);
+            setGroup(list);
+            setIsSwitch(_switch === 1 ? true : false);
+            setSwitchType(type);
+          }
+        }
+      );
+    }
+  }, []);
 
   return (
     <>
@@ -138,15 +172,17 @@ export function KeyWordAddPage() {
               options={[
                 {
                   label: "开",
-                  value: 0,
+                  value: "0",
                 },
                 {
                   label: "关",
-                  value: 1,
+                  value: "1",
                 },
               ]}
-              defaultValue={[0]}
-              onChange={(arr) => setSwitchType(arr[0])}
+              value={switchType}
+              onChange={(arr) => {
+                setSwitchType(arr[0]);
+              }}
             />
           }
         />
@@ -197,27 +233,52 @@ export function KeyWordAddPage() {
           borderRadius: "0",
         }}
         onClick={() => {
-          addKeyWordApi(
-            {
-              bot_id: localStorage.getItem("botId"),
-              bot_token: localStorage.getItem("botToken"),
-              content: JSON.stringify({
-                text: reply,
-                //text_links: [],
-                inline_keyboard: [group],
-                medias_path: imgUrl ? [imgUrl] : [],
-              }),
-              filter_users: "",
-              is_switch: isSwitch ? 1 : 0,
-              key_words: keyWord,
-              status: 0,
-              switch_type: switchType,
-            },
-            () => {
-              Toast.show({ content: "保存成功", position: "center" });
-              navigate(-1);
-            }
-          );
+          if (id) {
+            updateKeyWordApi(
+              {
+                id,
+                bot_id: localStorage.getItem("botId"),
+                bot_token: localStorage.getItem("botToken"),
+                content: JSON.stringify({
+                  text: reply,
+                  //text_links: [],
+                  inline_keyboard: [group],
+                  medias_path: imgUrl ? [imgUrl] : [],
+                }),
+                filter_users: "",
+                is_switch: isSwitch ? 1 : 0,
+                key_words: keyWord,
+                status: 0,
+                switch_type: parseInt(switchType),
+              },
+              () => {
+                Toast.show({ content: "保存成功", position: "center" });
+                navigate(-1);
+              }
+            );
+          } else {
+            addKeyWordApi(
+              {
+                bot_id: localStorage.getItem("botId"),
+                bot_token: localStorage.getItem("botToken"),
+                content: JSON.stringify({
+                  text: reply,
+                  //text_links: [],
+                  inline_keyboard: [group],
+                  medias_path: imgUrl ? [imgUrl] : [],
+                }),
+                filter_users: "",
+                is_switch: isSwitch ? 1 : 0,
+                key_words: keyWord,
+                status: 0,
+                switch_type: parseInt(switchType),
+              },
+              () => {
+                Toast.show({ content: "保存成功", position: "center" });
+                navigate(-1);
+              }
+            );
+          }
         }}
       >
         保存

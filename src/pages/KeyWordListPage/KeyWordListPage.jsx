@@ -6,6 +6,7 @@ import { Dialog, Toast, Tag, Empty } from "antd-mobile";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { getKeyWordsListApi, deleteKeyWordApi } from "@/api/api";
 import { RiEditLine, RiDeleteBinLine } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 function Head() {
   return (
@@ -43,7 +44,8 @@ function Head() {
 }
 
 function KeyWordsItem(props) {
-  const item = props.item;
+  const { item, index } = props;
+  const navigate = useNavigate();
 
   return (
     <div
@@ -102,6 +104,9 @@ function KeyWordsItem(props) {
         >
           <RiEditLine
             style={{ fontSize: "28px", marginTop: "10px", color: "#666" }}
+            onClick={() => {
+              navigate(`/keyword-add?index=${index}&id=${item.id}`);
+            }}
           />
           <RiDeleteBinLine
             style={{ fontSize: "28px", color: "#666" }}
@@ -167,7 +172,7 @@ export function KeyWordListPage() {
         </div>
         <div style={{ textAlign: "center" }}>
           <Link to="keyword-add">
-            <IoIosAddCircleOutline style={{ fontSize: "25px" }} />
+            <IoIosAddCircleOutline style={{ fontSize: "40px" }} />
           </Link>
         </div>
       </div>
